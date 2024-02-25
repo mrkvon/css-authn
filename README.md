@@ -7,11 +7,12 @@ Supported versions are 6.x and 7.x
 ## Usage
 
 ```ts
-import { getAuthenticatedFetch, createAccount } from 'css-authn/dist/7.x'
+import { v6, v7 } from 'css-authn'
+// or import { createAccount, getAuthenticatedFetch } from 'css-authn/dist/7.x'
 
 // the methods return a Promise, so you can wrap them in async function, and await them...
 // get authenticated fetch
-const authenticatedFetch = await getAuthenticatedFetch({
+const authenticatedFetch = await v7.getAuthenticatedFetch({
   email: 'email@example',
   password: 'password',
   provider: 'https://solidserver.example', // no trailing slash!
@@ -20,7 +21,7 @@ const authenticatedFetch = await getAuthenticatedFetch({
 })
 
 // in version 7, there's also a method to create account and pod
-await createAccount({
+await v7.createAccount({
   username: 'username',
   password: 'password',
   email: 'email@example.com',

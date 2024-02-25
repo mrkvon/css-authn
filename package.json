@@ -1,26 +1,44 @@
 {
   "name": "css-authn",
-  "version": "0.0.15-alpha.0",
+  "version": "0.0.15-alpha.1",
   "description": "Authenticate to CommunitySolidServer using its API",
-  "homepage": "https://github.com/ldhop/ldhop/tree/main/packages/css-authn",
+  "homepage": "https://github.com/mrkvon/css-authn",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ldhop/ldhop.git"
+    "url": "https://github.com/mrkvon/css-authn.git"
   },
+  "keywords": [
+    "solid",
+    "solidproject",
+    "linked-data",
+    "community-solid-server"
+  ],
   "license": "MIT",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "tsc",
-    "prepublish": "yarn build"
+    "build": "rm -rf dist && tsc",
+    "prepublishOnly": "yarn build",
+    "lint": "eslint --ext .ts",
+    "lint:fix": "eslint --ext .ts --fix",
+    "format": "prettier --write '**/*.{ts,md,json,yml}'"
   },
   "dependencies": {
     "@inrupt/solid-client-authn-core": "^1.17.5",
     "tough-cookie": "^4.1.3"
   },
   "devDependencies": {
-    "@types/tough-cookie": "^4.0.5"
+    "@types/node": "^20.11.20",
+    "@types/tough-cookie": "^4.0.5",
+    "@typescript-eslint/eslint-plugin": "^6.11.0",
+    "@typescript-eslint/parser": "^6.11.0",
+    "eslint": "^8.53.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.1",
+    "prettier": "^3.1.0",
+    "typescript": "^5.2.2"
   }
 }
