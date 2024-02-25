@@ -4,6 +4,7 @@ import {
   generateDpopKeyPair,
 } from '@inrupt/solid-client-authn-core'
 import tough from 'tough-cookie'
+import { toBase64 } from './utils'
 
 type AccountHandles = {
   controls: {
@@ -127,7 +128,7 @@ export const getAuthenticatedFetch = async ({
     method: 'POST',
     headers: {
       // The header needs to be in base64 encoding.
-      authorization: `Basic ${Buffer.from(authString).toString('base64')}`,
+      authorization: `Basic ${toBase64(authString)}`,
       'content-type': 'application/x-www-form-urlencoded',
       dpop: await createDpopHeader(tokenUrl, 'POST', dpopKey),
     },

@@ -4,6 +4,7 @@ import {
   createDpopHeader,
   generateDpopKeyPair,
 } from '@inrupt/solid-client-authn-core'
+import { toBase64 } from './utils'
 
 // https://communitysolidserver.github.io/CommunitySolidServer/6.x/usage/client-credentials/#generating-a-token
 export const generateToken = async ({
@@ -73,7 +74,7 @@ export const requestAccessToken = async ({
     method: 'POST',
     headers: {
       // The header needs to be in base64 encoding.
-      authorization: `Basic ${Buffer.from(authString).toString('base64')}`,
+      authorization: `Basic ${toBase64(authString)}`,
       'content-type': 'application/x-www-form-urlencoded',
       dpop: await createDpopHeader(tokenUrl, 'POST', dpopKey),
     },
