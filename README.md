@@ -2,7 +2,9 @@
 
 Utilities to authenticate to Community Solid Server via its API
 
-Supported versions are 6.x and 7.x
+Supported versions are 6.x and 7.x.
+
+This package is based on _Automating authentication with Client Credentials_ [v6](https://communitysolidserver.github.io/CommunitySolidServer/6.x/usage/client-credentials/) and [v7](https://communitysolidserver.github.io/CommunitySolidServer/7.x/usage/client-credentials/).
 
 ## Usage
 
