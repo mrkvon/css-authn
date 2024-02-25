@@ -1,6 +1,6 @@
 {
   "name": "css-authn",
-  "version": "0.0.15",
+  "version": "0.0.16-alpha.0",
   "description": "Authenticate to CommunitySolidServer using its API",
   "homepage": "https://github.com/mrkvon/css-authn",
   "repository": {
@@ -17,7 +17,8 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "scripts": {
     "build": "rm -rf dist && tsc",
