@@ -1,5 +1,9 @@
 # `css-authn`
 
+[![GitHub License](https://img.shields.io/github/license/mrkvon/css-authn)](https://github.com/mrkvon/css-authn/blob/main/LICENSE)
+[![NPM Version](https://img.shields.io/npm/v/css-authn)](https://npmjs.com/package/css-authn)
+![NPM Type Definitions](https://img.shields.io/npm/types/css-authn)
+
 Utilities to authenticate to Community Solid Server via its API
 
 Supported versions are 6.x and 7.x.
