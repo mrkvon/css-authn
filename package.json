@@ -1,6 +1,6 @@
 {
   "name": "css-authn",
-  "version": "0.0.16-alpha.0",
+  "version": "0.0.16",
   "description": "Authenticate to CommunitySolidServer using its API",
   "homepage": "https://github.com/mrkvon/css-authn",
   "repository": {
