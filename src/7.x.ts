@@ -28,7 +28,9 @@ export const getAuthenticatedFetch = async ({
 }) => {
   // log in first
 
-  const handlesResponse = await customFetch(provider + '/.account/')
+  const handlesResponse = await customFetch(
+    new URL('.account/', provider).toString(),
+  )
   await throwIfResponseNotOk(handlesResponse)
 
   const handles = (await handlesResponse.json()) as AccountHandles
@@ -54,9 +56,10 @@ export const getAuthenticatedFetch = async ({
   // This assumes your server is started under http://localhost:3000/.
   // It also assumes you have already logged in and `cookie` contains a valid cookie header
   // as described in the API documentation.
-  const indexResponse = await customFetch(provider + '/.account/', {
-    headers: { cookie },
-  })
+  const indexResponse = await customFetch(
+    new URL('.account/', provider).toString(),
+    { headers: { cookie } },
+  )
 
   await throwIfResponseNotOk(indexResponse)
 
@@ -123,7 +126,7 @@ export const getAuthenticatedFetch = async ({
   // This URL can be found by looking at the "token_endpoint" field at
   // http://localhost:3000/.well-known/openid-configuration
   // if your server is hosted at http://localhost:3000/.
-  const tokenUrl = provider + '/.oidc/token'
+  const tokenUrl = new URL('.oidc/token', provider).toString()
   const response2 = await customFetch(tokenUrl, {
     method: 'POST',
     headers: {
@@ -178,15 +181,15 @@ export const createAccount = async ({
   password ??= 'correcthorsebatterystaple'
   email ??= username + '@example.org'
   const config = {
-    idp: provider + '/',
-    podUrl: `${provider}/${username}/`,
-    webId: `${provider}/${username}/profile/card#me`,
+    idp: new URL('./', provider).toString(),
+    podUrl: new URL(`${username}/`, provider).toString(),
+    webId: new URL(`${username}/profile/card#me`, provider).toString(),
     username,
     password,
     email,
   }
 
-  const accountEndpoint = provider + '/.account/account/'
+  const accountEndpoint = new URL('.account/account/', provider).toString()
 
   // create the account
   const response = await customFetch(accountEndpoint, { method: 'post' })
@@ -200,9 +203,10 @@ export const createAccount = async ({
   await jar.setCookie(accountCookie, provider)
 
   // get account handles
-  const response2 = await customFetch(provider + '/.account/', {
-    headers: { cookie: await jar.getCookieString(provider) },
-  })
+  const response2 = await customFetch(
+    new URL('.account/', provider).toString(),
+    { headers: { cookie: await jar.getCookieString(provider) } },
+  )
   await throwIfResponseNotOk(response2)
 
   const handles = (await response2.json()) as AccountHandles

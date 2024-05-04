@@ -23,13 +23,16 @@ export const generateToken = async ({
   // This assumes your server is started under http://localhost:3000/.
   // This URL can also be found by checking the controls in JSON responses when interacting with the IDP API,
   // as described in the Identity Provider section.
-  const response = await customFetch(`${provider}/idp/credentials/`, {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    // The email/password fields are those of your account.
-    // The name field will be used when generating the ID of your token.
-    body: JSON.stringify({ email, password, name: tokenName }),
-  })
+  const response = await customFetch(
+    new URL('idp/credentials/', provider).toString(),
+    {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      // The email/password fields are those of your account.
+      // The name field will be used when generating the ID of your token.
+      body: JSON.stringify({ email, password, name: tokenName }),
+    },
+  )
 
   if (!response.ok) {
     throw new Error(
@@ -69,7 +72,7 @@ export const requestAccessToken = async ({
   // This URL can be found by looking at the "token_endpoint" field at
   // http://localhost:3000/.well-known/openid-configuration
   // if your server is hosted at http://localhost:3000/.
-  const tokenUrl = `${provider}/.oidc/token`
+  const tokenUrl = new URL('.oidc/token', provider).toString()
   const response = await customFetch(tokenUrl, {
     method: 'POST',
     headers: {
