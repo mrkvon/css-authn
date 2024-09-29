@@ -4,7 +4,7 @@ import {
   createDpopHeader,
   generateDpopKeyPair,
 } from '@inrupt/solid-client-authn-core'
-import { toBase64 } from './utils'
+import { toBase64 } from './utils.js'
 
 // https://communitysolidserver.github.io/CommunitySolidServer/6.x/usage/client-credentials/#generating-a-token
 export const generateToken = async ({
