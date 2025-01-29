@@ -4,7 +4,7 @@ import {
   generateDpopKeyPair,
 } from '@inrupt/solid-client-authn-core'
 import tough from 'tough-cookie'
-import { toBase64 } from './utils'
+import { toBase64 } from './utils.js'
 
 type AccountHandles = {
   controls: {
