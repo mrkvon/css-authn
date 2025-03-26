@@ -298,8 +298,8 @@ export const createAccount = async ({
 }) => {
   const config = {
     idp: new URL('./', provider).toString(),
-    podUrl: new URL(`${username}/`, provider).toString(),
-    webId: new URL(`${username}/profile/card#me`, provider).toString(),
+    podUrl: '',
+    webId: '',
     username,
     password,
     email,
@@ -350,6 +350,11 @@ export const createAccount = async ({
   })
 
   await throwIfResponseNotOk(response3)
+
+  const body = (await response3.json()) as { pod: string; webId: string }
+
+  config.webId = body.webId
+  config.podUrl = body.pod
 
   return config
 }
