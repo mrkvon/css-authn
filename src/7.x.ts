@@ -33,7 +33,6 @@ import {
   generateDpopKeyPair,
   KeyPair,
 } from '@inrupt/solid-client-authn-core'
-import tough from 'tough-cookie'
 import { toBase64 } from './utils.js'
 
 interface AccountHandles {
@@ -308,20 +307,16 @@ export const createAccount = async ({
   const accountEndpoint = new URL('.account/account/', provider).toString()
 
   // create the account
-  const response = await customFetch(accountEndpoint, { method: 'post' })
+  const response = await customFetch(accountEndpoint, { method: 'POST' })
   await throwIfResponseNotOk(response)
 
-  const jar = new tough.CookieJar()
-  const accountCookie = response.headers.get('set-cookie')
-
-  if (!accountCookie)
-    throw new Error('unexpectedly authorization cookie not available')
-  await jar.setCookie(accountCookie, provider)
+  const account = (await response.json()) as { authorization: string }
+  const authorization = `CSS-Account-Token ${account.authorization}`
 
   // get account handles
   const response2 = await customFetch(
     new URL('.account/', provider).toString(),
-    { headers: { cookie: await jar.getCookieString(provider) } },
+    { headers: { authorization } },
   )
   await throwIfResponseNotOk(response2)
 
@@ -330,22 +325,16 @@ export const createAccount = async ({
   const createLoginResponse = await customFetch(
     handles.controls.password.create,
     {
-      method: 'post',
+      method: 'POST',
       body: JSON.stringify({ email, password, confirmPassword: password }),
-      headers: {
-        'content-type': 'application/json',
-        cookie: await jar.getCookieString(handles.controls.password.create),
-      },
+      headers: { 'content-type': 'application/json', authorization },
     },
   )
   await throwIfResponseNotOk(createLoginResponse)
 
   const response3 = await customFetch(handles.controls.account.pod, {
-    method: 'post',
-    headers: {
-      cookie: await jar.getCookieString(handles.controls.account.pod),
-      'content-type': 'application/json',
-    },
+    method: 'POST',
+    headers: { 'content-type': 'application/json', authorization },
     body: JSON.stringify({ name: username }),
   })
 
