@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Setup tests with node:test runner. Usage: `yarn test` and `yarn test:watch`.
+- Add github workflows.
+
 ## [0.1.1] - 2025-03-26
 
 ### Fixed
