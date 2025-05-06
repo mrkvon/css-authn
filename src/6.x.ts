@@ -36,7 +36,7 @@ import {
 import { toBase64 } from './utils.js'
 
 // https://communitysolidserver.github.io/CommunitySolidServer/6.x/usage/client-credentials/#generating-a-token
-export const generateToken = async ({
+const generateToken = async ({
   provider,
   email,
   password,
@@ -80,7 +80,7 @@ export const generateToken = async ({
 }
 
 // https://communitysolidserver.github.io/CommunitySolidServer/6.x/usage/client-credentials/#requesting-an-access-token
-export const requestAccessToken = async ({
+const requestAccessToken = async ({
   provider,
   id,
   secret,
@@ -130,7 +130,7 @@ export const requestAccessToken = async ({
 }
 
 // https://communitysolidserver.github.io/CommunitySolidServer/6.x/usage/client-credentials/#using-the-access-token-to-make-an-authenticated-request
-export const authenticateFetch = async ({
+const authenticateFetch = async ({
   dpopKey,
   accessToken,
   fetch: customFetch = globalThis.fetch,
