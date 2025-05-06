@@ -46,22 +46,20 @@ const getAccountAuthorization = async ({
   provider,
   email,
   password,
-  fetch: customFetch = globalThis.fetch,
 }: {
   provider: string
   email: string
   password: string
-  fetch?: typeof globalThis.fetch
 }) => {
   // First we request the account API controls to find out where we can log in
-  const indexResponse = await customFetch(new URL('.account/', provider))
+  const indexResponse = await fetch(new URL('.account/', provider))
 
   await throwIfResponseNotOk(indexResponse)
 
   const { controls } = (await indexResponse.json()) as AccountHandles
 
   // And then we log in to the account API
-  const response = await customFetch(controls.password.login, {
+  const response = await fetch(controls.password.login, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({ email, password }),
@@ -78,16 +76,14 @@ const getIdAndSecret = async ({
   authorization,
   provider,
   webId,
-  fetch: customFetch = globalThis.fetch,
 }: {
   authorization: string
   provider: string
   webId?: string
-  fetch?: typeof globalThis.fetch
 }) => {
   // Now that we are logged in, we need to request the updated controls from the server.
   // These will now have more values than in the previous example.
-  const indexResponse = await customFetch(new URL('.account/', provider), {
+  const indexResponse = await fetch(new URL('.account/', provider), {
     headers: { authorization: `CSS-Account-Token ${authorization}` },
   })
 
@@ -96,28 +92,24 @@ const getIdAndSecret = async ({
   const handles = (await indexResponse.json()) as AccountHandles
 
   // Here we request the server to generate a token on our account
-  const response = await customFetch(
-    handles.controls.account.clientCredentials,
-    {
-      method: 'POST',
-      headers: {
-        authorization: `CSS-Account-Token ${authorization}`,
-        'content-type': 'application/json',
-      },
-      // The name field will be used when generating the ID of your token.
-      // The WebID field determines which WebID you will identify as when using the token.
-      // Only WebIDs linked to your account can be used.
-      body: JSON.stringify({
-        name: 'my-token',
-        webId: await getWebId({
-          webId,
-          handles,
-          authorization,
-          fetch: customFetch,
-        }),
-      }),
+  const response = await fetch(handles.controls.account.clientCredentials, {
+    method: 'POST',
+    headers: {
+      authorization: `CSS-Account-Token ${authorization}`,
+      'content-type': 'application/json',
     },
-  )
+    // The name field will be used when generating the ID of your token.
+    // The WebID field determines which WebID you will identify as when using the token.
+    // Only WebIDs linked to your account can be used.
+    body: JSON.stringify({
+      name: 'my-token',
+      webId: await getWebId({
+        webId,
+        handles,
+        authorization,
+      }),
+    }),
+  })
 
   await throwIfResponseNotOk(response)
 
@@ -137,16 +129,14 @@ const getWebId = async ({
   webId,
   handles,
   authorization,
-  fetch: customFetch = globalThis.fetch,
 }: {
   webId?: string
   handles: AccountHandles
   authorization: string
-  fetch?: typeof globalThis.fetch
 }) => {
   // now let's get all available webIds
 
-  const webIdsResponse = await customFetch(handles.controls.account.webId, {
+  const webIdsResponse = await fetch(handles.controls.account.webId, {
     headers: {
       authorization: `CSS-Account-Token ${authorization}`,
     },
@@ -175,12 +165,10 @@ const getAccessToken = async ({
   id,
   secret,
   provider,
-  fetch: customFetch = globalThis.fetch,
 }: {
   id: string
   secret: string
   provider: string
-  fetch?: typeof globalThis.fetch
 }) => {
   // A key pair is needed for encryption.
   // This function from `solid-client-authn` generates such a pair for you.
@@ -193,7 +181,7 @@ const getAccessToken = async ({
   // http://localhost:3000/.well-known/openid-configuration
   // if your server is hosted at http://localhost:3000/.
   const tokenUrl = new URL('.oidc/token', provider)
-  const response = await customFetch(tokenUrl, {
+  const response = await fetch(tokenUrl, {
     method: 'POST',
     headers: {
       // The header needs to be in base64 encoding.
@@ -219,17 +207,13 @@ const getAccessToken = async ({
 const generateAuthenticatedFetch = async ({
   accessToken,
   dpopKey,
-  fetch: customFetch = globalThis.fetch,
 }: {
   accessToken: string
   dpopKey: KeyPair
-  fetch?: typeof globalThis.fetch
 }) => {
   // The DPoP key needs to be the same key as the one used in the previous step.
   // The Access token is the one generated in the previous step.
-  const authFetch = await buildAuthenticatedFetch(customFetch, accessToken, {
-    dpopKey,
-  })
+  const authFetch = buildAuthenticatedFetch(accessToken, { dpopKey })
 
   return authFetch
 }
@@ -239,38 +223,29 @@ export const getAuthenticatedFetch = async ({
   email,
   password,
   webId,
-  fetch: customFetch = globalThis.fetch,
 }: {
   provider: string
   email: string
   password: string
   webId?: string
-  fetch?: typeof globalThis.fetch
 }) => {
   const authorization = await getAccountAuthorization({
     provider,
     email,
     password,
-    fetch: customFetch,
   })
 
   const { id, secret } = await getIdAndSecret({
     authorization,
     provider,
     webId,
-    fetch: customFetch,
   })
   const { accessToken, dpopKey } = await getAccessToken({
     id,
     secret,
     provider,
-    fetch: customFetch,
   })
-  return await generateAuthenticatedFetch({
-    accessToken,
-    dpopKey,
-    fetch: customFetch,
-  })
+  return await generateAuthenticatedFetch({ accessToken, dpopKey })
 }
 
 const throwIfResponseNotOk = async (response: Response) => {
@@ -287,13 +262,11 @@ export const createAccount = async ({
   password,
   email,
   provider,
-  fetch: customFetch = globalThis.fetch,
 }: {
   username: string
   password: string
   email: string
   provider: string
-  fetch?: typeof globalThis.fetch
 }) => {
   const config = {
     idp: new URL('./', provider).toString(),
@@ -304,35 +277,31 @@ export const createAccount = async ({
     email,
   }
 
-  const accountEndpoint = new URL('.account/account/', provider).toString()
+  const accountEndpoint = new URL('.account/account/', provider)
 
   // create the account
-  const response = await customFetch(accountEndpoint, { method: 'POST' })
+  const response = await fetch(accountEndpoint, { method: 'POST' })
   await throwIfResponseNotOk(response)
 
   const account = (await response.json()) as { authorization: string }
   const authorization = `CSS-Account-Token ${account.authorization}`
 
   // get account handles
-  const response2 = await customFetch(
-    new URL('.account/', provider).toString(),
-    { headers: { authorization } },
-  )
+  const response2 = await fetch(new URL('.account/', provider), {
+    headers: { authorization },
+  })
   await throwIfResponseNotOk(response2)
 
   const handles = (await response2.json()) as AccountHandles
 
-  const createLoginResponse = await customFetch(
-    handles.controls.password.create,
-    {
-      method: 'POST',
-      body: JSON.stringify({ email, password, confirmPassword: password }),
-      headers: { 'content-type': 'application/json', authorization },
-    },
-  )
+  const createLoginResponse = await fetch(handles.controls.password.create, {
+    method: 'POST',
+    body: JSON.stringify({ email, password, confirmPassword: password }),
+    headers: { 'content-type': 'application/json', authorization },
+  })
   await throwIfResponseNotOk(createLoginResponse)
 
-  const response3 = await customFetch(handles.controls.account.pod, {
+  const response3 = await fetch(handles.controls.account.pod, {
     method: 'POST',
     headers: { 'content-type': 'application/json', authorization },
     body: JSON.stringify({ name: username }),
