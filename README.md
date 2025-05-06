@@ -3,6 +3,7 @@
 [![GitHub License](https://img.shields.io/github/license/mrkvon/css-authn)](https://github.com/mrkvon/css-authn/blob/main/LICENSE)
 [![NPM Version](https://img.shields.io/npm/v/css-authn)](https://npmjs.com/package/css-authn)
 ![NPM Type Definitions](https://img.shields.io/npm/types/css-authn)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/mrkvon/css-authn/test.yml)
 
 Utilities to authenticate to Community Solid Server via its API
 
