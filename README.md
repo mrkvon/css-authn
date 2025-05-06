@@ -22,8 +22,7 @@ const authenticatedFetch = await v7.getAuthenticatedFetch({
   email: 'email@example',
   password: 'password',
   provider: 'https://solidserver.example',
-  webId: 'https://solidserver.example/person/profile/card#me' // (optional) if there are multiple webIds associated with the account, you need to specify which one to authenticate with
-  fetch, // (optional) you can also provide your own fetch compatible with native Node fetch
+  webId: 'https://solidserver.example/person/profile/card#me', // (optional) if there are multiple webIds associated with the account, you need to specify which one to authenticate with
 })
 
 // in version 7, there's also a method to create account and pod
@@ -32,7 +31,6 @@ await v7.createAccount({
   password: 'password',
   email: 'email@example.com',
   provider: 'https://solidserver.example',
-  fetch, // (optional) you can also provide your own fetch compatible with native Node fetch
 })
 ```
 
