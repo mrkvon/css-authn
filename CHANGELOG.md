@@ -7,17 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2025-05-06
+
 ### Added
 
-- Setup tests with `node:test` runner. Usage: `yarn test` and `yarn test:watch`.
-- Add github workflows.
+- Setup tests with `node:test` runner. Usage: `yarn test` and `yarn test:watch`. (beb7a60f429743c84f8aba348c0c8bf6fd10f8a7)
+- Add github workflows. (beb7a60f429743c84f8aba348c0c8bf6fd10f8a7)
 
 ### Changed
 
-- **BREAKING CHANGE:**: Upgrade `@inrupt/solid-client-authn-core` to v2.  
+- **BREAKING CHANGE:**: Upgrade `@inrupt/solid-client-authn-core` to v2. (4b50e1fe2fa2261bb7b5482c327b0b97d82628f3)  
   Custom fetch is no longer supported.  
   Drop support for Node v16. Supported Node versions are 18, 20, 22.
-- Switch from cookie to authorization header in `v7.createAccount`.
+- Switch from cookie to authorization header in `v7.createAccount`. (f9e172752bec6c3b269745b962ab73f012956980)
 
 ## [0.1.1] - 2025-03-26
 
