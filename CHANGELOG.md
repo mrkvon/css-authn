@@ -7,9 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- **BREAKING CHANGE:**: Upgrade `@inrupt/solid-client-authn-core` to v3.  
+  Drop support for Node v18. Supported Node versions are 20, 22.
+- Reintroduce optional custom fetch.
+
 ## [0.2.1] - 2025-05-06
 
-Updated documentation.
+- Update documentation.
 
 ## [0.2.0] - 2025-05-06
 

@@ -46,7 +46,7 @@
     "test:watch": "NODE_ENV=vitest node --import tsx --test --watch src/tests/*.spec.ts"
   },
   "dependencies": {
-    "@inrupt/solid-client-authn-core": "^2.4.1"
+    "@inrupt/solid-client-authn-core": "^3.0.0"
   },
   "devDependencies": {
     "@solid/community-server": "^7.1.7",
