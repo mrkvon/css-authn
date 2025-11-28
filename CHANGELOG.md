@@ -7,14 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2025-11-29
+
 ### Added
 
-- `oidcIssuer` property in `createAccount` input and output, and in `getAuthenticatedFetch` input
+- `oidcIssuer` property in `createAccount` input and output, and in `getAuthenticatedFetch` input (e66fe266a8f201867881ccbc1689d6b65ab076fe)
 
 ### Deprecated
 
-- `provider` property in `createAccount` and `getAuthenticatedFetch` input (use `oidcIssuer` instead)
-- `idp` property in `createAccount` output (use `oidcIssuer` instead)
+- `provider` property in `createAccount` and `getAuthenticatedFetch` input (use `oidcIssuer` instead) (e66fe266a8f201867881ccbc1689d6b65ab076fe)
+- `idp` property in `createAccount` output (use `oidcIssuer` instead) (e66fe266a8f201867881ccbc1689d6b65ab076fe)
 
 ## [0.3.0] - 2025-07-05
 
