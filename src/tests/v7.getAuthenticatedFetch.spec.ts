@@ -40,7 +40,7 @@ describe('v7 getAuthenticatedFetch', async () => {
     {
       condition: 'without explicit webId',
       params: {
-        get provider() {
+        get oidcIssuer() {
           const url = new URL('http://localhost')
           url.port = String(port)
           return url.toString()
@@ -52,7 +52,7 @@ describe('v7 getAuthenticatedFetch', async () => {
     {
       condition: 'with explicit webId',
       params: {
-        get provider() {
+        get oidcIssuer() {
           const url = new URL('http://localhost')
           url.port = String(port)
           return url.toString()
@@ -60,14 +60,14 @@ describe('v7 getAuthenticatedFetch', async () => {
         email: 'person@example',
         password: 'correcthorsebatterystaple',
         get webId() {
-          return new URL('person/profile/card#me', this.provider).toString()
+          return new URL('person/profile/card#me', this.oidcIssuer).toString()
         },
       },
     },
     {
       condition: 'with custom fetch',
       params: {
-        get provider() {
+        get oidcIssuer() {
           const url = new URL('http://localhost')
           url.port = String(port)
           return url.toString()
@@ -96,7 +96,7 @@ describe('v7 getAuthenticatedFetch', async () => {
       options.assert?.prepared()
 
       const filename = randomUUID() + '.ttl'
-      const testFile = new URL(filename, options.params.provider)
+      const testFile = new URL(filename, options.params.oidcIssuer)
 
       const response = await authFetch(testFile, {
         method: 'PUT',

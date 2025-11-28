@@ -37,13 +37,13 @@ import { toBase64 } from './utils.js'
 
 // https://communitysolidserver.github.io/CommunitySolidServer/6.x/usage/client-credentials/#generating-a-token
 const generateToken = async ({
-  provider,
+  oidcIssuer,
   email,
   password,
   tokenName = 'my-token',
   fetch: customFetch,
 }: {
-  provider: string
+  oidcIssuer: string
   email: string
   password: string
   tokenName?: string
@@ -53,7 +53,7 @@ const generateToken = async ({
   // This URL can also be found by checking the controls in JSON responses when interacting with the IDP API,
   // as described in the Identity Provider section.
   const response = await customFetch(
-    new URL('idp/credentials/', provider).toString(),
+    new URL('idp/credentials/', oidcIssuer).toString(),
     {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
@@ -81,12 +81,12 @@ const generateToken = async ({
 
 // https://communitysolidserver.github.io/CommunitySolidServer/6.x/usage/client-credentials/#requesting-an-access-token
 const requestAccessToken = async ({
-  provider,
+  oidcIssuer,
   id,
   secret,
   fetch: customFetch,
 }: {
-  provider: string
+  oidcIssuer: string
   id: string
   secret: string
   fetch: typeof globalThis.fetch
@@ -101,7 +101,7 @@ const requestAccessToken = async ({
   // This URL can be found by looking at the "token_endpoint" field at
   // http://localhost:3000/.well-known/openid-configuration
   // if your server is hosted at http://localhost:3000/.
-  const tokenUrl = new URL('.oidc/token', provider).toString()
+  const tokenUrl = new URL('.oidc/token', oidcIssuer).toString()
   const response = await customFetch(tokenUrl, {
     method: 'POST',
     headers: {
@@ -151,23 +151,37 @@ const authenticateFetch = async ({
 
 export const getAuthenticatedFetch = async ({
   provider,
+  oidcIssuer: oidcIssuer_,
   email,
   password,
   fetch: customFetch = globalThis.fetch,
-}: {
-  provider: string
-  email: string
-  password: string
-  fetch?: typeof globalThis.fetch
-}) => {
+}:
+  | {
+      /** @deprecated Use oidcIssuer instead */
+      provider: string
+      oidcIssuer?: never
+      email: string
+      password: string
+      fetch?: typeof globalThis.fetch
+    }
+  | {
+      /** @deprecated Use oidcIssuer instead */
+      provider?: never
+      oidcIssuer: string
+      email: string
+      password: string
+      fetch?: typeof globalThis.fetch
+    }) => {
+  const oidcIssuer = oidcIssuer_ ?? provider
+
   const { id, secret } = await generateToken({
-    provider,
+    oidcIssuer,
     email,
     password,
     fetch: customFetch,
   })
   const { dpopKey, accessToken } = await requestAccessToken({
-    provider,
+    oidcIssuer,
     id,
     secret,
     fetch: customFetch,

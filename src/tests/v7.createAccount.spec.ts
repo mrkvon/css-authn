@@ -29,7 +29,7 @@ describe('v7 createAccount', {}, async () => {
       username,
       email,
       password,
-      provider: serverUrl,
+      oidcIssuer: serverUrl,
     })
 
     assert.deepStrictEqual(result, {
@@ -37,6 +37,7 @@ describe('v7 createAccount', {}, async () => {
       username,
       password,
       idp: new URL('/', serverUrl).toString(),
+      oidcIssuer: new URL('/', serverUrl).toString(),
       podUrl: new URL(username + '/', serverUrl).toString(),
       webId: new URL(username + '/profile/card#me', serverUrl).toString(),
     })
@@ -49,7 +50,7 @@ describe('v7 createAccount', {}, async () => {
     assert.deepStrictEqual(profileDocument[1], {
       '@id': result.webId,
       '@type': [foaf.Person],
-      [solid.oidcIssuer]: [{ '@id': result.idp }],
+      [solid.oidcIssuer]: [{ '@id': result.oidcIssuer }],
     })
   })
 
@@ -65,7 +66,7 @@ describe('v7 createAccount', {}, async () => {
       username,
       email,
       password,
-      provider: serverUrl,
+      oidcIssuer: serverUrl,
       fetch: fetchSpy,
     })
 
@@ -74,6 +75,7 @@ describe('v7 createAccount', {}, async () => {
       username,
       password,
       idp: new URL('/', serverUrl).toString(),
+      oidcIssuer: new URL('/', serverUrl).toString(),
       podUrl: new URL(username + '/', serverUrl).toString(),
       webId: new URL(username + '/profile/card#me', serverUrl).toString(),
     })
@@ -88,7 +90,7 @@ describe('v7 createAccount', {}, async () => {
     assert.deepStrictEqual(profileDocument[1], {
       '@id': result.webId,
       '@type': [foaf.Person],
-      [solid.oidcIssuer]: [{ '@id': result.idp }],
+      [solid.oidcIssuer]: [{ '@id': result.oidcIssuer }],
     })
   })
 })

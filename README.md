@@ -22,7 +22,7 @@ import { v6, v7 } from 'css-authn'
 const authenticatedFetch = await v7.getAuthenticatedFetch({
   email: 'email@example',
   password: 'password',
-  provider: 'https://solidserver.example',
+  oidcIssuer: 'https://solidserver.example',
   webId: 'https://solidserver.example/person/profile/card#me', // (optional) if there are multiple webIds associated with the account, you need to specify which one to authenticate with
   fetch, // (optional) you can also provide your own fetch compatible with native Node fetch
 })
@@ -32,7 +32,7 @@ await v7.createAccount({
   username: 'username',
   password: 'password',
   email: 'email@example.com',
-  provider: 'https://solidserver.example',
+  oidcIssuer: 'https://solidserver.example',
   fetch, // (optional) you can also provide your own fetch compatible with native Node fetch
 })
 ```

@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `oidcIssuer` property in `createAccount` input and output, and in `getAuthenticatedFetch` input
+
+### Deprecated
+
+- `provider` property in `createAccount` and `getAuthenticatedFetch` input (use `oidcIssuer` instead)
+- `idp` property in `createAccount` output (use `oidcIssuer` instead)
+
 ## [0.3.0] - 2025-07-05
 
 - **BREAKING CHANGE:**: Upgrade `@inrupt/solid-client-authn-core` to v3.  

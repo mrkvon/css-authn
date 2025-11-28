@@ -43,18 +43,18 @@ interface AccountHandles {
 }
 
 const getAccountAuthorization = async ({
-  provider,
+  oidcIssuer,
   email,
   password,
   fetch: customFetch,
 }: {
-  provider: string
+  oidcIssuer: string
   email: string
   password: string
   fetch: typeof globalThis.fetch
 }) => {
   // First we request the account API controls to find out where we can log in
-  const indexResponse = await customFetch(new URL('.account/', provider))
+  const indexResponse = await customFetch(new URL('.account/', oidcIssuer))
 
   await throwIfResponseNotOk(indexResponse)
 
@@ -76,18 +76,18 @@ const getAccountAuthorization = async ({
 
 const getIdAndSecret = async ({
   authorization,
-  provider,
+  oidcIssuer,
   webId,
   fetch: customFetch,
 }: {
   authorization: string
-  provider: string
+  oidcIssuer: string
   webId?: string
   fetch: typeof globalThis.fetch
 }) => {
   // Now that we are logged in, we need to request the updated controls from the server.
   // These will now have more values than in the previous example.
-  const indexResponse = await customFetch(new URL('.account/', provider), {
+  const indexResponse = await customFetch(new URL('.account/', oidcIssuer), {
     headers: { authorization: `CSS-Account-Token ${authorization}` },
   })
 
@@ -174,12 +174,12 @@ const getWebId = async ({
 const getAccessToken = async ({
   id,
   secret,
-  provider,
+  oidcIssuer,
   fetch: customFetch,
 }: {
   id: string
   secret: string
-  provider: string
+  oidcIssuer: string
   fetch: typeof globalThis.fetch
 }) => {
   // A key pair is needed for encryption.
@@ -192,7 +192,7 @@ const getAccessToken = async ({
   // This URL can be found by looking at the "token_endpoint" field at
   // http://localhost:3000/.well-known/openid-configuration
   // if your server is hosted at http://localhost:3000/.
-  const tokenUrl = new URL('.oidc/token', provider)
+  const tokenUrl = new URL('.oidc/token', oidcIssuer)
   const response = await customFetch(tokenUrl, {
     method: 'POST',
     headers: {
@@ -237,19 +237,34 @@ const generateAuthenticatedFetch = async ({
 
 export const getAuthenticatedFetch = async ({
   provider,
+  oidcIssuer: oidcIssuer_,
   email,
   password,
   webId,
   fetch: customFetch = globalThis.fetch,
-}: {
-  provider: string
-  email: string
-  password: string
-  webId?: string
-  fetch?: typeof globalThis.fetch
-}) => {
+}:
+  | {
+      /** @deprecated Use oidcIssuer instead */
+      provider: string
+      oidcIssuer?: never
+      email: string
+      password: string
+      webId?: string
+      fetch?: typeof globalThis.fetch
+    }
+  | {
+      oidcIssuer: string
+      /** @deprecated Use oidcIssuer instead */
+      provider?: never
+      email: string
+      password: string
+      webId?: string
+      fetch?: typeof globalThis.fetch
+    }) => {
+  const oidcIssuer = oidcIssuer_ ?? provider
+
   const authorization = await getAccountAuthorization({
-    provider,
+    oidcIssuer,
     email,
     password,
     fetch: customFetch,
@@ -257,14 +272,14 @@ export const getAuthenticatedFetch = async ({
 
   const { id, secret } = await getIdAndSecret({
     authorization,
-    provider,
+    oidcIssuer,
     webId,
     fetch: customFetch,
   })
   const { accessToken, dpopKey } = await getAccessToken({
     id,
     secret,
-    provider,
+    oidcIssuer,
     fetch: customFetch,
   })
   return await generateAuthenticatedFetch({
@@ -281,23 +296,51 @@ const throwIfResponseNotOk = async (response: Response) => {
     )
 }
 
-// TODO get rid of the tough-cookie
-// use CSS-Account-Token header instead
+interface AccountDetails {
+  /** @deprecated Use oidcIssuer instead */
+  idp: string
+  oidcIssuer: string
+  podUrl: string
+  webId: string
+  username: string
+  password: string
+  email: string
+}
+
+/**
+ * Create account on CSS
+ */
 export const createAccount = async ({
   username,
   password,
   email,
   provider,
+  oidcIssuer,
   fetch: customFetch = globalThis.fetch,
-}: {
-  username: string
-  password: string
-  email: string
-  provider: string
-  fetch?: typeof globalThis.fetch
-}) => {
-  const config = {
-    idp: new URL('./', provider).toString(),
+}:
+  | {
+      username: string
+      password: string
+      email: string
+      /** @deprecated Use `oidcIssuer` instead */
+      provider: string
+      oidcIssuer?: never
+      fetch?: typeof globalThis.fetch
+    }
+  | {
+      username: string
+      password: string
+      email: string
+      oidcIssuer: string
+      /** @deprecated Use `oidcIssuer` instead */
+      provider?: never
+      fetch?: typeof globalThis.fetch
+    }) => {
+  oidcIssuer = new URL('./', oidcIssuer ?? provider).toString()
+
+  const config: AccountDetails = {
+    idp: oidcIssuer,
+    oidcIssuer,
     podUrl: '',
     webId: '',
     username,
@@ -305,7 +348,7 @@ export const createAccount = async ({
     email,
   }
 
-  const accountEndpoint = new URL('.account/account/', provider)
+  const accountEndpoint = new URL('.account/account/', oidcIssuer)
 
   // create the account
   const response = await customFetch(accountEndpoint, { method: 'POST' })
@@ -315,7 +358,7 @@ export const createAccount = async ({
   const authorization = `CSS-Account-Token ${account.authorization}`
 
   // get account handles
-  const response2 = await customFetch(new URL('.account/', provider), {
+  const response2 = await customFetch(new URL('.account/', oidcIssuer), {
     headers: { authorization },
   })
   await throwIfResponseNotOk(response2)
